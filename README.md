@@ -1,86 +1,90 @@
-Welcome to the fimap project!
-=============================
+# Welcome to the fimap project!
 
-fimap is a little python tool which can find, prepare, audit, exploit and even google automatically for local and remote file inclusion bugs in webapps. fimap should be something like [sqlmap](http://sqlmap.sourceforge.net) just for LFI/RFI bugs instead of sql injection.
+## _项目原地址：https://gitlab.tha-imax.de/root/fimap_
 
-Originally, this tool was created by [this very awesome fellow](https://tha-imax.de/git/root/fimap/tree/master) but there hasn't been a lot of movement on the project since porting to github.
+fimap 是一个 python2 编写的小工具，它可以自动查找、准备、审计、利用甚至通过 google 查找 web 应用中的本地和远程文件包含漏洞。
 
-* * *
+fimap 类似 sqlmap 工具，只是针对 LFI/RFI 漏洞，而不是 sql 注入。
 
-## What works currently?
+---
 
-*   Check a Single URL, List of URLs, or Google results fully automaticly.
-*   Can identify and exploit file inclusion bugs.
+## 安装
 
-*   Relative\Absolute Path Handling.
-*   Tries automaticly to eleminate suffixes with Nullbyte and other methods like Dot-Truncation.
-*   Remotefile Injection.
-*   Logfile Injection.
+克隆项目：
 
-*   Test and exploit multiple bugs:
+```bash
+git clone https://github.com/iSecurityClub/fimap.git && cd fimap
+```
 
-*   include()
-*   include_once()
-*   require()
-*   require_once()
+如果你未安装 pip2，请使用如下命令安装（需要先安装 python2）：
 
-*   You always define absolute pathnames in the configs. No monkey like redundant pathes like:
+```bash
+wget https://bootstrap.pypa.io/2.6/get-pip.py && python2 get-pip.py && rm get-pip.py
+```
 
-*   ../etc/passwd
-*   ../../etc/passwd
-*   ../../../etc/passwd
+安装 Python2 依赖库:
 
-*   Has a Blind Mode (--enable-blind) for cases when the server has disabled error messages.
-*   Has an interactive exploit mode which...
+```bash
+pip2 install -r ./src/requirements.txt
+```
 
-*   ...can spawn a shell on vulnerable systems.
-*   ...can spawn a reverse shell on vulnerable systems.
-*   ...can do everything you have added in your_payload-dict_ inside the_config.py_
+## 使用方法
 
-*   Add your own payloads and pathes to the config.py file.
-*   Has a Harvest mode which can collect URLs from a given domain for later pentesting.
-*   Works also on windows.
-*   Can handle directories in RFI mode like:
+- 主程序：`./src/fimap.py`
 
-*   <tt><? include ($_GET["inc"] . "/content/index.html"); ?></tt>
-*   <tt><? include ($_GET["inc"] . "_lang/index.html"); ?></tt>
-*   where Null-Byte is not possible.
+- 查看帮助：
 
-*   Can use proxys.
-*   Scans and exploits GET, POST and Cookies.
-*   Has a very small footprint. (No senseless bruteforcing of pathes - unless you need it.)
-*   Can attack also windows servers! 
-*   Has a tiny plugin interface for writing exploitmode plugins 
+```bash
+python2 fimap.py -h
+```
 
-*   Non Interactive Exploiting
+- 对单个 URL 进行测试：
 
-## What doesn't work yet?
+```bash
+python2 fimap.py -u http://192.168.64.1:83/index.php?page=submit
+```
 
-*   Other languages than PHP (even if engine is ready for others as well.)
+![](https://isecurityclub-1253463441.cos.ap-chengdu.myqcloud.com/uPic/iShot2021-01-31%2016.47.17.png!w)
 
-## Is there a How To?
+![](https://isecurityclub-1253463441.cos.ap-chengdu.myqcloud.com/uPic/1612082883224.jpg!w)
 
-*   Check out [this](http://kaoticcreations.blogspot.com/2011/08/automated-lfirfi-scanning-exploiting.html) post by HR from [Kaotic Creations](http://kaoticcreations.blogspot.com) which explains fimap really good :) It's a tutorial for windows but I think unix heads should understand it as well.
+- 从给定的根路径开始爬取，并将爬取到的链接保存到 output.txt
 
-## Credits
+```bash
+python2 fimap.py –H –u http://target-site.com/ –w output.txt -C
+```
 
-*   Main Developer: [Iman Karim](mailto:fimap.dev@gmail.com)
+- 还可以使用 `-d` 指定爬取深度：
 
-*   Trusted Plugins:
+```bash
+python2 fimap.py –H –u http://target-site.com/ -d 3 –w output.txt -C
+```
 
-*   Metasploit binding by [Xavier Garcia](mailto:xavi.garcia(atom)gmail(dot)com)
-*   Weevily Injector by [Darren "Infodox" Martyn](mailto:infodox(atom)insecurety(dot)net) from [http://insecurety.net/](http://insecurety.net/)
-*   AES Reverse Shell by [Darren "Infodox" Martyn](mailto:infodox(atom)insecurety(dot)net) from [http://insecurety.net/](http://insecurety.net/)
+- 从文件中读取目标链接进行测试：
 
-*   Additional thanks goes out to:
+```bash
+python2 fimap.py –m –l /path/to/list/output.txt -C
+```
+- 结合 Google Hacker 进行测试：
+```bash
+python2 fimap.py –g –q inurl:index2.php?x= -C
+```
+- 以颜色模式输出：
+```bash
+python2 fimap.py -C
+```
 
-*   Peteris Krumins for [xgoogle](http://www.catonmat.net/blog/python-library-for-google-search/) python module.
-*   Pentestmonkey for [php-reverse-shell](http://pentestmonkey.net/tools/php-reverse-shell/).
-*   Crummy for [BeautifulSoup](http://www.crummy.com/software/BeautifulSoup/).
-*   Zeth0 from [commandline.org.uk](http://commandline.org.uk/) for ssh.py.
+## fimap 功能介绍
 
-*   Also thanks to:
+- 支持检查单个 URL、URL 列表或结合 Google Hacker 结果
+- 自动识别和利用文件包含漏洞
+- 自动处理相对/绝对路径处理
+- 自动尝试用 Nullbyte 和其他方法如 Dot-Truncation 来结束后缀
+- 支持远程文件注入/日志文件注入
+- 支持`blind`模式(--enable-blind)，当服务器禁用错误信息时，强制遍历所有测试
+- 支持交互式利用模式
+- 支持添加你自己的 payloads 和 pathes 到 xml 文件或重新写一个你自己的插件
+- 支持使用 proxys
+- 支持扫描和利用 GET、POST 和 Cookies
 
-*   The [Python](http://python.org) Project
-*   The [Eclipse](http://eclipse.org) Project
-*   The [Netbeans](http://netbeans.org) Project
+
