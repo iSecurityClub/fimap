@@ -1,6 +1,6 @@
 # Welcome to the fimap project!
 
-## _项目原地址：https://gitlab.tha-imax.de/root/fimap_
+> _项目原地址：https://gitlab.tha-imax.de/root/fimap_
 
 fimap 是一个 python2 编写的小工具，它可以自动查找、准备、审计、利用甚至通过 google 查找 web 应用中的本地和远程文件包含漏洞。
 
@@ -44,9 +44,9 @@ python2 fimap.py -h
 python2 fimap.py -u http://192.168.64.1:83/index.php?page=submit
 ```
 
-![](https://isecurityclub-1253463441.cos.ap-chengdu.myqcloud.com/uPic/iShot2021-01-31%2016.47.17.png!w)
+![](https://isecurityclub-1253463441.cos.ap-chengdu.myqcloud.com/uPic/iShot2021-01-31%2016.47.17.png)
 
-![](https://isecurityclub-1253463441.cos.ap-chengdu.myqcloud.com/uPic/1612082883224.jpg!w)
+![](https://isecurityclub-1253463441.cos.ap-chengdu.myqcloud.com/uPic/1612082883224.jpg)
 
 - 从给定的根路径开始爬取，并将爬取到的链接保存到 output.txt
 
